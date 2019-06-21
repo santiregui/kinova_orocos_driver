@@ -1,0 +1,29 @@
+<package>
+  <name>kinova_driver</name>
+  <version>1.1.6</version>
+  <description>This package contains the Orocos component of the Kinova driver</description>
+  <maintainer email="santiago.ireguirincon@student.kuleuven.be">Santiago Iregui</maintainer>
+
+  <license>MIT</license>
+
+  <url type="https://gitlab.mech.kuleuven.be/rob-hardware/kinova_driver"></url>
+  <!-- <url type="bugtracker"></url> -->
+
+  <author>Santiago Iregui</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rtt</build_depend>
+  <build_depend>orogen</build_depend>
+  <build_depend>rtt_ros</build_depend>
+
+  <run_depend>rtt</run_depend>
+  <run_depend>rtt_ros</run_depend>
+  <run_depend>rtt_rospack</run_depend>
+  <!-- <run_depend>rtt_rosnode</run_depend>
+  <run_depend>rtt_roscomm</run_depend> -->
+
+  <export>
+
+  </export>
+</package>
