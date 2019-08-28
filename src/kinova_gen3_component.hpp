@@ -10,8 +10,11 @@
 #include <BaseClientRpc.h>
 #include <RouterClient.h>
 #include <TransportClientUdp.h>
+#include <TransportClientTcp.h>
 #include <BaseCyclicClientRpc.h>
 #include <SessionClientRpc.h>
+#include <InterconnectConfigClientRpc.h>
+
 
 //Different servoing modes
 #define HIGH_LEVEL 	0 //By default
@@ -76,7 +79,7 @@ private:
 
 	//Class properties needed to communicate with the robot
 	bool isConnected;
-	k_api::TransportClientUdp* 										pTransport;
+	k_api::TransportClientTcp* 										pTransport;
 	k_api::RouterClient* 													pRouterClient;
 	k_api::Base::BaseClient*											pBase;
 	k_api::DeviceConfig::DeviceConfigClient* 			pDeviceConfig;

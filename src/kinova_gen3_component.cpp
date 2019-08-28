@@ -63,7 +63,7 @@ this->addPort( "tool_pose", tool_pose ).doc( "Output Port, Gets the tool pose ca
 this->addPort( "tool_twist", tool_twist ).doc( "Output Port, Gets the tool twist calculated from the measured data: three linear velocities [m/s] and three orientation velocities [rad/s] expressed in the global frame" );
 this->addPort( "tool_external_wrench",tool_external_wrench ).doc( "(For a future release of the Kortex API) Output Port, Gets the tool external wrench calculated from the measured data: three forces [N] and three moments [Nm]" );
 this->addPort( "tool_imu",tool_imu ).doc( "Output Port, Gets the information from the IMU: First three linear accelerations [m/s^2] and then three angular velocities [rad/s]" );
-this->addPort( "gripper_feedback",gripper_feedback ).doc( "Output Port, Gets the information from the Gripper: position (0-100), velocity (0-100), force (0-100). Currently only position is supported by Kortex API" );
+this->addPort( "gripper_feedback",gripper_feedback ).doc( "Output Port, Gets the information from the Gripper: position (0-100), velocity (0-100), current (mA)" );
 
 //Event output port
 this->addPort( "event_port",event_port ).doc( "Gets events for the high-level servoing mode (when actions are complete). Events: gripper_done_no_obj, gripper_done_with_obj, joints_done, cart_done" );
@@ -89,7 +89,7 @@ try{
   auto errorCallback = [](k_api::KError err){ log( Error ) << "Error while establishing the connection with the robot (BaseClient):   "<< err.toString() << endlog(); };
   auto errorCallbackRT = [](k_api::KError err) { log( Error ) << "Error while establishing the connection with the robot (BaseCyclicClient):   "<< err.toString() << endlog(); };
 
-  pTransport = new k_api::TransportClientUdp();
+  pTransport = new k_api::TransportClientTcp();
   pTransportRT = new k_api::TransportClientUdp();
 
   pTransport->connect(ip_address, port_number);
@@ -279,12 +279,17 @@ void kinova_gen3::stream_sensor_info(k_api::BaseCyclic::Feedback BaseFeedback_ms
     std::fill(temporary_tool_data.begin(), temporary_tool_data.end(), 0.0); //Assigns zero values to the vector, just in case to prevent the posibility of observing old values. Can be deleted to improve a bit the speed.
   }
   if ( gripper_feedback.connected() ){
-    temporary_gripper_data[0] =  BaseFeedback_msg.interconnect().position()/100;
-    temporary_gripper_data[1] =  BaseFeedback_msg.interconnect().velocity()/100;
-    temporary_gripper_data[2] =  BaseFeedback_msg.interconnect().force()/100;
+    temporary_gripper_data[0] =  BaseFeedback_msg.interconnect().gripper_feedback().motor()[0].position()/100;
+    temporary_gripper_data[1] =  BaseFeedback_msg.interconnect().gripper_feedback().motor()[0].velocity()/100;
+    temporary_gripper_data[2] =  BaseFeedback_msg.interconnect().gripper_feedback().motor()[0].current_motor();
 
     gripper_feedback.write(temporary_gripper_data);
     std::fill(temporary_gripper_data.begin(), temporary_gripper_data.end(), 0.0); //Assigns zero values to the vector, just in case to prevent the posibility of observing old values. Can be deleted to improve a bit the speed.
+
+
+  // std::string serializedData;
+  // google::protobuf::util::MessageToJsonString(BaseFeedback_msg.interconnect(), &serializedData);
+  // std::cout << serializedData << std::endl;
   }
 }
 std::string kinova_gen3::get_all_sensor_jsonstring(){
@@ -616,14 +621,14 @@ bool kinova_gen3::change_gripper_aperture(double value)
       action.set_application_data("");
 
       auto gripperCommand = action.mutable_send_gripper_command();
-      gripperCommand->set_mode(Kinova::Api::Base::GripperMode::GRIPPER_POSITION);
+      gripperCommand->set_mode(Kinova::Api::Base::GRIPPER_POSITION);
 
       auto gripper = gripperCommand->mutable_gripper();
 
       auto finger = gripper->add_finger();
 
       finger->set_finger_identifier(1);
-      finger->set_value(value*100);
+      finger->set_value(value);
 
       pBase->ExecuteAction(action);
       return true;
@@ -759,7 +764,7 @@ bool kinova_gen3::startHook() {
         if(action_event_index == k_api::Base::ActionEvent::ACTION_END){
           if(action_type == k_api::Base::ActionType::SEND_GRIPPER_COMMAND && event_port.connected()){
               BaseFeedback = pBaseCyclicRT->RefreshFeedback();
-              if(fabs(BaseFeedback.interconnect().position()/100-1)<0.01 || fabs(BaseFeedback.interconnect().position()/100)<0.01){
+              if(fabs(BaseFeedback.interconnect().gripper_feedback().motor()[0].position()/100-1)<0.01 || fabs(BaseFeedback.interconnect().gripper_feedback().motor()[0].position()/100)<0.01){
                 event_port.write("gripper_done_no_obj");
               }
               else{

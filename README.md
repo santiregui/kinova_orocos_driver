@@ -23,7 +23,7 @@ cd <Your installation directory>
 git clone https://gitlab.mech.kuleuven.be/r0742557/kinova_driver.git
 ```
 
-After cloning this repository, please download the [Kinova Kortex C++ API](https://github.com/Kinovarobotics/kortex) (in there they provide a google drive download link). In the downloaded files, go to the directory `kortex_api-1.1.6/cpp/linux_gcc_x86-64` and copy the two folders that you find there (*include* and *lib*). Then paste them into the directory of this driver, so that they follow the following directory hierarchy:
+After cloning this repository, please download the [Kinova Kortex C++ API](https://github.com/Kinovarobotics/kortex) (in there they provide a google drive download link). In the downloaded files, go to the directory `kortex_api-2.0.0/cpp/linux_gcc_x86-64` and copy the two folders that you find there (*include* and *lib*). Then paste them into the directory of this driver, so that they follow the following directory hierarchy:
 
 ```sh
 kinova_driver/include/kortex_api/
@@ -155,7 +155,7 @@ kin:start_sending_setpoints() -- Starts sending the setpoints it gets from the p
 
 Each time the set_servoing_mode() operation is called, it automatically stops sending the setpoints to the robot (for low level mode). Thus, start_sending_setpoints() should be called each time after you call set_servoing_mode() to set a low level mode.
 
-**Note:** The current version of the Kortex API (v1.1.6) doesn't support sending joint velocities. For this reason, in the meantime, the driver integrates the velocities and sends position setpoints to the robot. When v2.0 is released, the velocities will be sent directly to the robot.
+**Note:** The old version of the Kortex API (v1.1.6) didn't support sending joint velocities. For this reason, in the meantime, the driver integrates the velocities and sends position setpoints to the robot. This will be changed later with the new functionalities of 2.0
 
 If your trajectory generating components needs the initial joint angles (probably it would!) you can use the following before start sending the setpoints:
 
@@ -192,7 +192,7 @@ tool_pose                 |  3 elements with position [m] and 3 with RPY angles 
 tool_twist                |  3 elements with linear velocity [m/s] and 3 with angular velocity [rad/s]
 tool_external_wrench*     |  3 elements with forces [N] and 3 with torques [Nm] (estimation by measuring actuator torques)
 tool_imu                  |  3 IMU linear accelerations [m/s^2] and 3 IMU angular velocities [rad/s]
-gripper_feedback**        |  position [0-1], velocity [0-1] and force [0-1] (All dimensionless)
+gripper_feedback        |  position [0-1], velocity [0-1] and current [mA] (first two are dimensionless)
 
 
 In addition, there is a special port called "event_port", which generates string events when the robot reaches a position commanded while in high level servoing mode.
@@ -209,7 +209,6 @@ gripper_aborted           | Send when a specified aperture is aborted****
 
 **&ast;** Currently not supported by the Kortex API
 
-**&ast;&ast;** Currently only position is supported by the Kortex API. You will get zeros in the last two elements of the array.
 
 **&ast;&ast;&ast;** It supports internal and external object grasping
 
