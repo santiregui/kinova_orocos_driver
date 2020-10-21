@@ -25,7 +25,7 @@ function startHook()
 end
 
 time = 0
-frequency = 0.2
+frequency = 0.3
 amplitud = 20*math.pi/180 --Radians
 -- amplitud = 1.22 --Radians
 function updateHook()

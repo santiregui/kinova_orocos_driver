@@ -9,8 +9,14 @@ cmake_minimum_required(VERSION 2.6.3)
 project(kinova_driver)
 add_definitions(-std=c++11)
 
+#================= Use the following for release version:
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} -Wall")#Generates additional warning messages when compiling
-#set( CMAKE_VERBOSE_MAKEFILE on )
+
+#================= Use the following for Debuging:
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall")#Generates additional warning messages when compiling
+# # set( CMAKE_VERBOSE_MAKEFILE on )
+# set(CMAKE_BUILD_TYPE Debug)
+
 
 # Use 'source orocos_toolchain/env.sh' if the command below fails:
 find_package(OROCOS-RTT QUIET)

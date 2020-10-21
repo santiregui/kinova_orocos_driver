@@ -33,30 +33,28 @@ traj_gen:configure()
 depl:loadComponent("kin", "kinova_gen3")
 kin = depl:getPeer("kin")
 
-
-
---Call configureHook() functions of both components
-traj_gen:getProperty("initial_angles"):set(kin:get_joint_angles())
-
-kin:configure()
-kin:set_servoing_mode(2)
-
---Set the activity of both components running at 1 Khz (same frequency as the kinova robot control loop)
-depl:setActivity("kin", 0.001, 0, rtt.globals.ORO_SCHED_OTHER) --Must run at 1 khz (0.001 ms), or else you will not get a smooth motion
-depl:setActivity("traj_gen", 0.001, 0, rtt.globals.ORO_SCHED_OTHER)
-
 --Connect the ports
 cp=rtt.Variable("ConnPolicy")
 depl:connect("kin.sensor_joint_angles","traj_gen.measured_angles",cp )
 depl:connect("kin.control_joint_positions","traj_gen.desired_positions",cp )
 
+--Call configureHook() functions of both components
+kin:configure()
 traj_gen:configure()
-
 
 --Set the control mode to low level position servoing (2)
 
+kin:set_servoing_mode(2)
 
+motion_freq = 100
+traj_gen:getProperty("initial_angles"):set(kin:get_joint_angles())
 
+--Set the activity of both components running at 1 Khz (same frequency as the kinova robot control loop)
+depl:setActivity("kin", 0, 99, rtt.globals.ORO_SCHED_RT)
+depl:setActivity("traj_gen", 1/motion_freq, 99, rtt.globals.ORO_SCHED_RT)
+depl:setWaitPeriodPolicy("kin", rtt.globals.ORO_WAIT_ABS)
+
+kin:getProperty("setpoints_frequency"):set(motion_freq)
 
 --Start running the loop of both components.
 kin:start()

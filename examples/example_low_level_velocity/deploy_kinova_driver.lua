@@ -43,12 +43,17 @@ kin:configure()
 traj_gen:configure()
 
 
---Set the control mode to low level position servoing (2)
+--Set the control mode to low level velocity servoing (1)
 kin:set_servoing_mode(1)
 
+motion_freq = 100
 --Set the activity of both components running at 1 Khz (same frequency as the kinova robot control loop)
-depl:setActivity("kin", 0.001, 0, rtt.globals.ORO_SCHED_OTHER) --Must run at 1 khz (0.001 ms), or else you will not get a smooth motion
-depl:setActivity("traj_gen", 0.01, 0, rtt.globals.ORO_SCHED_OTHER)
+depl:setActivity("kin", 0, 99, rtt.globals.ORO_SCHED_RT)
+depl:setActivity("traj_gen", 1/motion_freq, 99, rtt.globals.ORO_SCHED_RT)
+depl:setWaitPeriodPolicy("kin", rtt.globals.ORO_WAIT_ABS)
+
+
+kin:getProperty("setpoints_frequency"):set(motion_freq)
 
 --Start running the loop of both components.
 kin:start()

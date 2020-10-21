@@ -1,8 +1,8 @@
 <package>
   <name>kinova_driver</name>
-  <version>1.1.6</version>
+  <version>2.2.0</version>
   <description>This package contains the Orocos component of the Kinova driver</description>
-  <maintainer email="santiago.ireguirincon@student.kuleuven.be">Santiago Iregui</maintainer>
+  <maintainer email="santiago.iregui@kuleuven.be">Santiago Iregui</maintainer>
 
   <license>MIT</license>
 
