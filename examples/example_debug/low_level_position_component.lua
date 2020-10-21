@@ -38,7 +38,7 @@ end
 time = 0
 
 frequency = {0.2,0.2,0.2,0.2,0.2,0.2,0.2}
-amplitude = {20,20,20,20,20,20,20} --Degrees
+amplitude = {30,20,20,20,20,20,30} --Degrees
 tau = 10
 
 function updateHook()

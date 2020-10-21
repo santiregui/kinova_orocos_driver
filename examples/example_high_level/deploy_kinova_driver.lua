@@ -44,7 +44,7 @@ cp=rtt.Variable("ConnPolicy")
 depl:connect("kin.sensor_joint_angles","print_sensor.inport",cp )
 depl:connect("kin.event_port","Supervisor.events",cp)
 
-depl:setActivity("kin", 0.001, 0, rtt.globals.ORO_SCHED_OTHER)
+depl:setActivity("kin", 0, 0, rtt.globals.ORO_SCHED_OTHER)
 depl:setActivity("print_sensor", 1, 0, rtt.globals.ORO_SCHED_OTHER) --Prints every second
 
 --Uncomment to print sensor data:

@@ -17,7 +17,9 @@ target_link_libraries(kinova_gen3 ${catkin_LIBRARIES})
 
 set(KORTEX_DIR "${PROJECT_SOURCE_DIR}/include/kortex_api/")
 # target_link_libraries(kinova_gen3 ${KORTEX_DIR}lib/release/libCppKinovaApi.a) #Old API
-target_link_libraries(kinova_gen3 ${KORTEX_DIR}lib/release/libKortexApi.a)
+# target_link_libraries(kinova_gen3 ${KORTEX_DIR}lib/release/libKortexApi.a) # API 2.0
+target_link_libraries(kinova_gen3 ${KORTEX_DIR}lib/release/libKortexApiCpp.a) # API 2.2
+# target_link_libraries(kinova_gen3 ${KORTEX_DIR}lib/debug/libKortexApi.a)
 
 include_directories(${KORTEX_DIR}include)
 include_directories(${KORTEX_DIR}include/client)
